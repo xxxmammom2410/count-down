@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>カウントアップタイマー</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 50px;
+    }
+    #time {
+      font-size: 2em;
+      margin: 20px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>カウントアップタイマー</h1>
+  <div id="time">00:00:00</div>
+  <button id="startButton">スタート</button>
+  <button id="pauseButton">一時停止</button>
+
+  <script>
+    let timer;
+    let elapsedTime = 0;
+
+    document.getElementById('startButton').addEventListener('click', () => {
+      if (timer) return; // 既にタイマーが動作中の場合は何もしない
+
+      timer = setInterval(() => {
+        elapsedTime++;
+        const hours = String(Math.floor(elapsedTime / 3600)).padStart(2, '0');
+        const minutes = String(Math.floor((elapsedTime % 3600) / 60)).padStart(2, '0');
+        const seconds = String(elapsedTime % 60).padStart(2, '0');
+        document.getElementById('time').textContent = `${hours}:${minutes}:${seconds}`;
+      }, 1000);
+    });
+
+    document.getElementById('pauseButton').addEventListener('click', () => {
+      clearInterval(timer);
+      timer = null; // タイマーをリセット
+    });
+  </script>
+</body>
+</html>

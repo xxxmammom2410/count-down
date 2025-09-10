@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <title>カウントダウン</title>
+  </head>
+  <body>
+    <div>
+      <button id="countdownTab">カウントダウンモード</button>
+      <button id="dateTab">日付モード</button>
+    </div>
+
+    <div id="countdown-module">
+      <label for="timeInput">時間を設定してください（秒）:</label>
+      <input type="number" id="timeInput" min="1" />
+
+      <button id="startButton">スタート</button>
+
+      <div>
+        <h1 id="countdownDisplay">0</h1>
+      </div>
+
+      <label for="unitSelect">単位を選択してください:</label>
+      <select id="unitSelect">
+        <option value="seconds">秒</option>
+        <option value="minutes">分</option>
+        <option value="hours">時間</option>
+        <option value="days">日</option>
+      </select>
+      <div></div>
+      <button id="resetButton">リセット</button>
+      <div></div>
+    </div>
+
+    <div id="date-module">
+      <label for="dateInput">日付を設定してください:</label>
+      <input type="date" id="dateInput" value="2027-07-25" />
+      <button id="calculateDaysButton">日数を計算</button>
+
+      <div>
+        <h1 id="dateDisplay">0</h1>
+      </div>
+    </div>
+
+    <script>
+      const resetButton = document.getElementById("resetButton");
+
+      resetButton.addEventListener("click", () => {
+        if (window.intervalId) {
+          clearInterval(window.intervalId);
+          window.intervalId = null; // クリア後にリセット
+        }
+
+        countdownDisplay.textContent = "0";
+        timeInput.value = "";
+      });
+    </script>
+
+    <script>
+      const dateInput = document.getElementById("dateInput");
+      const calculateDaysButton = document.getElementById(
+        "calculateDaysButton"
+      );
+
+      calculateDaysButton.addEventListener("click", () => {
+        const selectedDate = new Date(dateInput.value);
+        const currentDate = new Date();
+
+        if (isNaN(selectedDate.getTime())) {
+          alert("正しい日付を入力してください");
+          return;
+        }
+
+    
+
+        const timeDifference = selectedDate - currentDate;
+        const daysRemaining = Math.ceil(timeDifference / (1000 * 60 * 60 * 24));
+
+        if (daysRemaining < 0) {
+          alert("過去の日付が選択されています");
+        } else {
+          dateDisplay.textContent = `残り ${daysRemaining} 日`;
+        }
+      });
+    </script>
+
+    <script>
+      const timeInput = document.getElementById("timeInput");
+      const startButton = document.getElementById("startButton");
+      const countdownDisplay = document.getElementById("countdownDisplay");
+
+      const unitSelect = document.getElementById("unitSelect");
+
+      startButton.addEventListener("click", () => {
+        let time = parseInt(timeInput.value, 10);
+        const unit = unitSelect.value;
+
+        if (isNaN(time) || time <= 0) {
+          alert("正しい時間を入力してください");
+          return;
+        }
+
+        switch (unit) {
+          case "minutes":
+            time *= 60;
+            break;
+          case "hours":
+            time *= 3600;
+            break;
+          case "days":
+            time *= 86400;
+            break;
+        }
+
+        countdownDisplay.textContent = time;
+
+        const interval = setInterval(() => {
+          time -= 1;
+          countdownDisplay.textContent = time;
+
+          if (time <= 0) {
+            clearInterval(interval);
+            alert("時間が終了しました！");
+          }
+        }, 1000);
+      });
+    </script>
+
+    <script>
+      const countdownTab = document.getElementById("countdownTab");
+      const dateTab = document.getElementById("dateTab");
+      const countdownElements = document.querySelectorAll(
+        "#timeInput, #startButton, #unitSelect , #countdown-module"
+      );
+      const dateElements = document.querySelectorAll(
+        "#dateInput, #calculateDaysButton, #date-module"
+      );
+
+      function toggleMode(isCountdownMode) {
+        countdownElements.forEach(
+          (el) => (el.style.display = isCountdownMode ? "inline" : "none")
+        );
+        dateElements.forEach(
+          (el) => (el.style.display = isCountdownMode ? "none" : "inline")
+        );
+      }
+
+      countdownTab.addEventListener("click", () => toggleMode(true));
+      dateTab.addEventListener("click", () => toggleMode(false));
+
+      // Initialize with countdown mode visible
+      toggleMode(false);
+
+
+  // ページ読み込み時に calculateDaysButton を自動クリック
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("calculateDaysButton").click();
+  });
+    </script>
+  </body>
+</html>
